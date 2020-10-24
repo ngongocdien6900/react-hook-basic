@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.scss';
+import PostList from './components/PostList';
+import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
 
 function App() {
@@ -7,10 +9,35 @@ function App() {
     {id: 1, title: 'Dợ xỉn cưng à!'},
     {id: 2, title: 'Anh yêu dợ xỉn cưng nhiều lắm nhen'},
     {id: 3, title: 'Chụt chụt chụt'}
-  ]);
-  //con truyền lên
-  function handleTodoClick(todo) {
-    //trả về vị trí
+  ]); 
+
+  //tạo state để lưu trữ danh sách post lấy từ server
+  const [postList, setPostList] = useState([]);
+  //lấy lần đầu tiên nên dependency rỗng
+  useEffect(() => {
+
+    async function fetchPostList() {
+      try{
+        const requestUrl = `http://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1`;
+        //đi lấy dữ liệu ở url khai báo
+        const response = await fetch(requestUrl);
+        const reponseJSON = await response.json();
+        console.log({reponseJSON});
+
+        const {data} = reponseJSON; //lấy data ở trong đó ra
+        //cập nhật dữ liệu
+        setPostList(data);
+      }catch(error) {
+        console.log('Failed to featch post list', error.message);
+      }
+    }
+    fetchPostList();
+  }, [])
+
+
+  //todo ở đây là do con truyền lên nè
+  function handleTodoClick(todo) { 
+    //nếu tìm thấy thì trả về vị trí
     const index = todoList.findIndex(x => x.id === todo.id)
     //nếu không tìm thấy thì không làm gì cả
     if(index < 0) return;
@@ -21,13 +48,29 @@ function App() {
     newTodoList.splice(index, 1);
     //set lại todo mới
     setTodoList(newTodoList);
+  } 
+  //lấy value từ thằng con và thêm vào todoList hiện tại
+  function handleTodoOnSubmit(formValue) {
+    const newTodo = {
+      id: todoList.length + 1, 
+      //lấy tất cả những field có ở formValue
+      ...formValue,
+    }
+    const newTodoList = [...todoList];
+    newTodoList.push(newTodo);
+    setTodoList(newTodoList);
+
   }
 
   return (
     <div className="app">
-      <h1>React Hook! Todo List</h1>
+      <h1>React Hook! PostList</h1>
+      {/* khi todoForm này submit sẽ gọi hàm bên trên */}
+      {/* <TodoForm onSubmit={handleTodoOnSubmit}/> */}
       {/* truyền qua todos bên kia là cái mảng todoList */}
-      <TodoList todos={todoList} onTodoClick={handleTodoClick}/>
+                                  {/* khi thằng TodoList được click thì gọi hàm này  */}
+      {/* <TodoList todos={todoList} onTodoClick={handleTodoClick}/> */}
+      <PostList posts={postList}/>
     </div>
   );
 }
