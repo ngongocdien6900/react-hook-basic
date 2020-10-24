@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.scss';
+import Pagination from './components/Panination';
+import queryString from 'query-string'
 import PostList from './components/PostList';
 import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
+
 
 function App() {
   const [todoList, setTodoList] = useState([
@@ -13,27 +16,46 @@ function App() {
 
   //tạo state để lưu trữ danh sách post lấy từ server
   const [postList, setPostList] = useState([]);
+  const [pagination, setPagination] = useState({
+    _page: 1,
+    _limit: 10,
+    _totalRows: 1,
+  });
+  const [filters, setFilters] = useState({
+    _limit: 10,
+    _page: 1,
+    //nếu sau này có search hoặc sort thì cứ thêm vào sau
+  });
   //lấy lần đầu tiên nên dependency rỗng
   useEffect(() => {
 
     async function fetchPostList() {
-      try{
-        const requestUrl = `http://js-post-api.herokuapp.com/api/posts?_limit=10&_page=1`;
+      try{            //biến từ object sang chuỗi
+        const paramsString = queryString.stringify(filters);
+        const requestUrl = `http://js-post-api.herokuapp.com/api/posts?${paramsString}`;
         //đi lấy dữ liệu ở url khai báo
         const response = await fetch(requestUrl);
         const reponseJSON = await response.json();
         console.log({reponseJSON});
 
-        const {data} = reponseJSON; //lấy data ở trong đó ra
+        const {data, pagination} = reponseJSON; //lấy data ở trong đó ra
         //cập nhật dữ liệu
         setPostList(data);
+        setPagination(pagination);
       }catch(error) {
         console.log('Failed to featch post list', error.message);
       }
     }
     fetchPostList();
-  }, [])
+  }, [filters]) //chạy lại mỗi lần filter này thay đổi nên truyền vào filters
 
+  
+  function handlePageChange(newPage) {
+    setFilters({
+      ...filters,
+      _page: newPage //set lại page bằng page con truyền lên
+    })
+  }
 
   //todo ở đây là do con truyền lên nè
   function handleTodoClick(todo) { 
@@ -70,7 +92,9 @@ function App() {
       {/* truyền qua todos bên kia là cái mảng todoList */}
                                   {/* khi thằng TodoList được click thì gọi hàm này  */}
       {/* <TodoList todos={todoList} onTodoClick={handleTodoClick}/> */}
-      <PostList posts={postList}/>
+      <PostList posts={postList}/>       
+                    {/* khi user click nút prev hoặc next thì gọi hàm này ở thằng cha */}
+      <Pagination pagination={pagination} onPageChange={handlePageChange}/>
     </div>
   );
 }
