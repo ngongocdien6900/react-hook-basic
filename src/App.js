@@ -5,6 +5,7 @@ import queryString from 'query-string'
 import PostList from './components/PostList';
 import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
+import PostFilterForm from './components/PostFilterForm';
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
   const [filters, setFilters] = useState({
     _limit: 10,
     _page: 1,
+    title_like: '', //search cái title chứa nội dung ở đây
     //nếu sau này có search hoặc sort thì cứ thêm vào sau
   });
   //lấy lần đầu tiên nên dependency rỗng
@@ -36,7 +38,7 @@ function App() {
         //đi lấy dữ liệu ở url khai báo
         const response = await fetch(requestUrl);
         const reponseJSON = await response.json();
-        console.log({reponseJSON});
+        // console.log({reponseJSON});
 
         const {data, pagination} = reponseJSON; //lấy data ở trong đó ra
         //cập nhật dữ liệu
@@ -84,6 +86,14 @@ function App() {
 
   }
 
+  function handleFilterChange(newFilters) {
+    setFilters({
+      ...filters,
+      _page: 1, //reset lại trang về trang 1, tại vì có khi dữ liệu có khi không nhiều
+      title_like: newFilters.searchTerm,
+    });
+  }
+
   return (
     <div className="app">
       <h1>React Hook! PostList</h1>
@@ -92,6 +102,8 @@ function App() {
       {/* truyền qua todos bên kia là cái mảng todoList */}
                                   {/* khi thằng TodoList được click thì gọi hàm này  */}
       {/* <TodoList todos={todoList} onTodoClick={handleTodoClick}/> */}
+      <PostFilterForm onSubmit={handleFilterChange}/>
+
       <PostList posts={postList}/>       
                     {/* khi user click nút prev hoặc next thì gọi hàm này ở thằng cha */}
       <Pagination pagination={pagination} onPageChange={handlePageChange}/>
