@@ -35,7 +35,6 @@ function PostFilterForm(props) {
         const formValues = {
             searchTerm: value,
         }
-        
         onSubmit(formValues); 
     }, 300);
 
@@ -45,6 +44,7 @@ function PostFilterForm(props) {
   return (
     <form>              
       <input type="text" value={searchTerm} onChange={handleSearchTermChange} />
+      
     </form>
   );
 }

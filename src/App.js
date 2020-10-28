@@ -6,6 +6,8 @@ import PostList from './components/PostList';
 import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
 import PostFilterForm from './components/PostFilterForm';
+import Clock from './components/Clock';
+import BetterClock from './components/BetterClock';
 
 
 function App() {
@@ -94,9 +96,15 @@ function App() {
     });
   }
 
+  const [showClock, setShowClock] = useState(true);
+
   return (
     <div className="app">
       <h1>React Hook! PostList</h1>
+      {/* nếu showClock = true thì sẽ hiện => render condition */}
+      {showClock && <Clock/>}
+      <BetterClock />
+      <button onClick={() => setShowClock(!showClock)}>Hide Clock</button>
       {/* khi todoForm này submit sẽ gọi hàm bên trên */}
       {/* <TodoForm onSubmit={handleTodoOnSubmit}/> */}
       {/* truyền qua todos bên kia là cái mảng todoList */}
