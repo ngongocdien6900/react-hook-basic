@@ -8,6 +8,7 @@ import TodoList from './components/TodoList';
 import PostFilterForm from './components/PostFilterForm';
 import Clock from './components/Clock';
 import BetterClock from './components/BetterClock';
+import MagicBox from './components/MagicBox';
 
 
 function App() {
@@ -100,21 +101,22 @@ function App() {
 
   return (
     <div className="app">
-      <h1>React Hook! PostList</h1>
+      <h1>React Hook! MagicBox</h1>
+      <MagicBox />
       {/* nếu showClock = true thì sẽ hiện => render condition */}
-      {showClock && <Clock/>}
-      <BetterClock />
-      <button onClick={() => setShowClock(!showClock)}>Hide Clock</button>
+      {/* {showClock && <Clock/>} */}
+      {/* <BetterClock /> */}
+      {/* <button onClick={() => setShowClock(!showClock)}>Hide Clock</button> */}
       {/* khi todoForm này submit sẽ gọi hàm bên trên */}
       {/* <TodoForm onSubmit={handleTodoOnSubmit}/> */}
       {/* truyền qua todos bên kia là cái mảng todoList */}
                                   {/* khi thằng TodoList được click thì gọi hàm này  */}
       {/* <TodoList todos={todoList} onTodoClick={handleTodoClick}/> */}
-      <PostFilterForm onSubmit={handleFilterChange}/>
+      {/* <PostFilterForm onSubmit={handleFilterChange}/> */}
 
-      <PostList posts={postList}/>       
+      {/* <PostList posts={postList}/>        */}
                     {/* khi user click nút prev hoặc next thì gọi hàm này ở thằng cha */}
-      <Pagination pagination={pagination} onPageChange={handlePageChange}/>
+      {/* <Pagination pagination={pagination} onPageChange={handlePageChange}/> */}
     </div>
   );
 }
